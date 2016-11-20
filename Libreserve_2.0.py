@@ -9,7 +9,6 @@ from selenium.webdriver.support.ui import Select
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from pyvirtualdisplay import Display
-
 # I/O
 def IO_Start():
   
@@ -147,7 +146,10 @@ def start_threads(username, password, month, date, time_hour, ampm_identifier, r
 def reservation(username, password, month, date, time_hour, ampm_identifier, room):
   
   try:
-    browser = webdriver.Chrome('./chromedriver')
+    display = Display(visible=0, size=(800, 800))
+    display.start()
+    browser = webdriver.Chrome()
+    print "Web Browser Initiated", username
     browser.get('https://rooms.library.nyu.edu')
     assert "BobCat" in browser.title
     assert 'nyu_shibboleth-login' in browser.page_source
