@@ -16,4 +16,4 @@ if __name__ == '__main__':
     driver = webdriver.Chrome()
     driver.get('http://www.google.com')
     print driver.title
-    driver.close()
+    driver.quit()
