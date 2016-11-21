@@ -147,14 +147,10 @@ def start_threads(username, password, month, date, time_hour, ampm_identifier, r
 def reservation(username, password, month, date, time_hour, ampm_identifier, room):
   
   try:
-<<<<<<< HEAD
-    browser = webdriver.Chrome()
-=======
     display = Display(visible=0, size=(800, 800))
     display.start()
     browser = webdriver.Chrome()
     print "Web Browser Initiated", username
->>>>>>> f8de8d20e72036c3deb19e20aaa24628c19345ab
     browser.get('https://rooms.library.nyu.edu')
     assert "BobCat" in browser.title
     assert 'nyu_shibboleth-login' in browser.page_source
