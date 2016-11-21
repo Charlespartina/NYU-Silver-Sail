@@ -190,8 +190,12 @@ def reservation(username, password, month, date, time_hour, ampm_identifier, roo
     ).click();
     # Click the next button
     while(True):
-      monthgrid = browser.find_elements_by_class_name('ui-datepicker-month')
-      nextgrid = browser.find_element_by_css_selector('span.ui-icon-circle-triangle-e')
+      monthgrid =  WebDriverWait(browser, 100).until(
+        EC.element_to_be_clickable((By.CLASS_NAME, "ui-datepicker-month"))
+      );
+      nextgrid = WebDriverWait(browser, 100).until(
+        EC.element_to_be_clickable((By.CSS_SELECTOR, "span.ui-icon-circle-triangle-e"))
+      );
       if monthgrid[1].text == month:   
         break
       nextgrid.click()
