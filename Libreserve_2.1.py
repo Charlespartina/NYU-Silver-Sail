@@ -23,7 +23,7 @@ def IO_Start():
   myidentifier = []
   myroom = ['Bobst LL2-07','Bobst LL2-08','Bobst LL2-22','Bobst LL2-09','Bobst LL1-20']
   mynext = []
-  
+  status = [] 
   f = open('credential/userinfo.txt','r+')
   for i in f:
     info_line.append(i)
@@ -39,18 +39,20 @@ def IO_Start():
     mytime.append(split[4])
     myidentifier.append(split[5][0:2])
 
+  # Start single task
+  for i in range(0,len(info_line)):
+    status.append(start_task(myusername[i], mypassword[i], mymonth[i], mydate[i], mytime[i], myidentifier[i], myroom))
 
-  # Start
-  start_threads(myusername,mypassword,mymonth,mydate,mytime,myidentifier,myroom)
+  # Start Threads
+  # start_threads(myusername,mypassword,mymonth,mydate,mytime,myidentifier,myroom)
   
   # Output
   f.seek(0,0)
   for i in range(len(mydate)):
     month_number = change_to_number(mymonth[i])
-    mydate[i], month_number = update(mydate[i],month_number)
+    if status[i] == 1:
+    	mydate[i], month_number = update(mydate[i],month_number)
     f.write(myusername[i]+' '+mypassword[i]+' '+month_number+' '+mydate[i]+' '+mytime[i]+' '+myidentifier[i]+' \n')
-
-  
   f.close()   
 def update(inputdate, inputmonth):
   day = int(inputdate)
@@ -133,6 +135,8 @@ def change_to_number(month_word):
       month_number = '12'
   return month_number
   
+def start_task(username, password, month, date, time_hour, ampm_identifier, room):
+  return reservation(username, password, month, date, time_hour, ampm_identifier, room)
   
 def start_threads(username, password, month, date, time_hour, ampm_identifier, room):
   amount = 0
@@ -145,7 +149,6 @@ def start_threads(username, password, month, date, time_hour, ampm_identifier, r
     t.start()
 
 def reservation(username, password, month, date, time_hour, ampm_identifier, room):
-  
   try:
     display = Display(visible=0, size=(800, 800))
     display.start()
@@ -190,22 +193,27 @@ def reservation(username, password, month, date, time_hour, ampm_identifier, roo
     ).click();
     # Click the next button
     while(True):
-      monthgrid =  WebDriverWait(browser, 100).until(
-        EC.element_to_be_clickable((By.CLASS_NAME, "ui-datepicker-month"))
-      );
+      monthgrid = WebDriverWait(browser, 100).until(
+        EC.presence_of_element_located((By.XPATH, "//span[@class='ui-datepicker-month']"))
+      )
       nextgrid = WebDriverWait(browser, 100).until(
         EC.element_to_be_clickable((By.CSS_SELECTOR, "span.ui-icon-circle-triangle-e"))
-      );
-      if monthgrid[1].text == month:   
+      )
+      if monthgrid.text == month:   
         break
       nextgrid.click()
 
     # Click the date
-    lastgrid = browser.find_element_by_css_selector('div.ui-datepicker-group-last')
-    datebutton = lastgrid.find_element_by_link_text(date)
+    firstgrid = browser.find_element_by_css_selector('div.ui-datepicker-group-first')
+    datebutton = WebDriverWait(browser, 100).until(
+	EC.element_to_be_clickable((By.LINK_TEXT, date))
+    )
     datebutton.click()
-    generate_grid =  browser.find_element_by_id('generate_grid')
-    generate_grid.click()
+    generate_grid = WebDriverWait(browser, 100).until(
+	EC.element_to_be_clickable((By.ID, 'generate_grid'))
+    )
+    browser.execute_script("arguments[0].click();", generate_grid)
+    # generate_grid.click()
     print 'Reservation Date Info Complete ',username
     
     # Calendar View
@@ -259,20 +267,15 @@ def reservation(username, password, month, date, time_hour, ampm_identifier, roo
     #print (alert_attribute.split())
     if 'alert-success' in alert_attribute.split():
       print 'Reservation Successful for NetID: ',username
-    
+      return 1 
     else:
       print 'Reservation Failed at the Final Stage for NetID: ', username
-      
+      return 0
   except:
       print 'Reservation Failed for NetID: ',username,'\n',sys.exc_info()[0]
+      return 0
   finally:
     browser.quit()
 
 if __name__ == "__main__":
   IO_Start()
-
-  #start_threads(myusername, mypassword, mymonth, mydate, mytime, myidentifier, myroom)
-
-
-
-
