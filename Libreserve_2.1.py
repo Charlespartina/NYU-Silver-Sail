@@ -267,12 +267,15 @@ def reservation(username, password, month, date, time_hour, ampm_identifier, roo
     #print (alert_attribute.split())
     if 'alert-success' in alert_attribute.split():
       print 'Reservation Successful for NetID: ',username
+      browser.quit()
       return 1 
     else:
       print 'Reservation Failed at the Final Stage for NetID: ', username
+      browser.quit()
       return 0
   except:
       print 'Reservation Failed for NetID: ',username,'\n',sys.exc_info()[0]
+      browser.quit()
       return 0
   finally:
     browser.quit()
