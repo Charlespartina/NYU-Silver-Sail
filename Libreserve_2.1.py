@@ -21,7 +21,7 @@ def IO_Start():
   mydate = []
   mytime = []
   myidentifier = []
-  myroom = ['Bobst LL2-07','Bobst LL2-08','Bobst LL2-22','Bobst LL2-09','Bobst LL1-20']
+  myroom = ['Bobst LL1-20','Bobst LL2-22','Bobst LL2-07','Bobst LL2-08','Bobst LL1-18']
   mynext = []
   status = [] 
   f = open('credential/userinfo.txt','r+')
@@ -30,7 +30,6 @@ def IO_Start():
   for i in info_line:
     if len(i) < 6:
       break
-    print(i)
     split = i.split(' ')
     myusername.append(split[0])
     mypassword.append(split[1])
@@ -40,7 +39,7 @@ def IO_Start():
     myidentifier.append(split[5][0:2])
 
   # Start single task
-  for i in range(0,len(info_line)):
+  for i in range(0,len(myusername)):
     status.append(start_task(myusername[i], mypassword[i], mymonth[i], mydate[i], mytime[i], myidentifier[i], myroom))
 
   # Start Threads
@@ -231,25 +230,25 @@ def reservation(username, password, month, date, time_hour, ampm_identifier, roo
     email.send_keys('tangziyi001@gmail.com')
     optionaltitle = footer.find_element_by_name('reservation[title]')
     optionaltitle.send_keys('Silver Sail Reservation for ',username)
-
     print 'Basic Info Filled', username
+
     #Choose time slot
     tr = body.find_elements_by_css_selector('tr')
-    slot = 0;
     for room_number in room:
+      flag = 0
       for i in tr:
         roomtitle = i.find_element_by_class_name('room_title_text')
-        if roomtitle.text == room_number:
-          slot = i.find_element_by_css_selector('td.timeslot_preferred_first')
-          break
-      # Check if available
-      slot_attribute = slot.get_attribute('class')
-      if 'timeslot_unavailable' not in slot_attribute.split():
-        print 'Time Slot Available', username
-        newSlot = WebDriverWait(browser, 1000).until(
-          EC.presence_of_element_located((By.XPATH, "//td[contains(@class, 'timeslot_preferred_first')]"))
-        )
-        newSlot.click()
+        slot = i.find_element_by_css_selector('td.timeslot_preferred_first')
+        if roomtitle.text != room_number:
+          continue
+        # Check if available
+        slot_attribute = slot.get_attribute('class')
+        if 'timeslot_unavailable' not in slot_attribute.split():
+          print 'Time Slot Available ', username, ' for room ', room_number
+          flag=1
+          browser.execute_script("arguments[0].click();", slot)
+        break
+      if flag==1:
         break
     print 'Choose Time Slot ', username
 
