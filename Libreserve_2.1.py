@@ -21,7 +21,7 @@ def IO_Start():
   mydate = []
   mytime = []
   myidentifier = []
-  myroom = ['Bobst LL1-20','Bobst LL2-22','Bobst LL2-07','Bobst LL2-08','Bobst LL1-18']
+  myroom = ['Bobst LL1-20','Bobst LL1-18','Bobst LL1-19','Bobst LL2-22','Bobst LL2-07','Bobst LL2-08','Bobst LL2-09']
   mynext = []
   status = [] 
   f = open('credential/userinfo.txt','r+')
@@ -182,7 +182,7 @@ def reservation(username, password, month, date, time_hour, ampm_identifier, roo
     minute.send_keys('00')
     ampm.send_keys(ampm_identifier)
     howlong.send_keys('2 hours')
-    print 'Reservation Time Info Complete ',username
+    print 'Reservation Time Info Complete',username
     
     # Find appropriate date
     #icon = browser.find_element_by_id('room_reservation_which_date')
@@ -213,7 +213,7 @@ def reservation(username, password, month, date, time_hour, ampm_identifier, roo
     )
     browser.execute_script("arguments[0].click();", generate_grid)
     # generate_grid.click()
-    print 'Reservation Date Info Complete ',username
+    print 'Reservation Date Info Complete',username
     
     # Calendar View
     content = WebDriverWait(browser, 100).until(
@@ -234,23 +234,29 @@ def reservation(username, password, month, date, time_hour, ampm_identifier, roo
 
     #Choose time slot
     tr = body.find_elements_by_css_selector('tr')
+    flag = 0
     for room_number in room:
-      flag = 0
       for i in tr:
         roomtitle = i.find_element_by_class_name('room_title_text')
-        slot = i.find_element_by_css_selector('td.timeslot_preferred_first')
+        slotFirst = i.find_element_by_css_selector('td.timeslot_preferred_first')
+        slotLast = i.find_element_by_css_selector('td.timeslot_preferred_last')
         if roomtitle.text != room_number:
           continue
         # Check if available
-        slot_attribute = slot.get_attribute('class')
-        if 'timeslot_unavailable' not in slot_attribute.split():
-          print 'Time Slot Available ', username, ' for room ', room_number
+        slot_attribute_first = slotFirst.get_attribute('class')
+	slot_attribute_last = slotLast.get_attribute('class')
+        if 'timeslot_unavailable' not in slot_attribute_first.split() and 'timeslot_unavailable' not in slot_attribute_last.split():
+          print 'Time Slot Available', username, 'for room', room_number
           flag=1
-          browser.execute_script("arguments[0].click();", slot)
+          browser.execute_script("arguments[0].click();", slotFirst)
         break
       if flag==1:
         break
-    print 'Choose Time Slot ', username
+    if flag==1:
+      print 'Choose Time Slot Successful', username
+    else:
+      print 'No Preferred Room Available', username
+      raise ValueError('No Room')
 
     # Click Button
     WebDriverWait(browser, 100).until(
