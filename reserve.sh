@@ -1,3 +1,3 @@
 #!/bin/bash
-source /home/ubuntu/NYU-Silver-Sail/env/bin/activate && python /home/ubuntu/NYU-Silver-Sail/Libreserve_2.1.py
+source /home/ubuntu/NYU-Silver-Sail/env/bin/activate && python /home/ubuntu/NYU-Silver-Sail/core/Libreserve_2.1.py
 

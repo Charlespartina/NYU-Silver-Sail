@@ -21,10 +21,10 @@ def IO_Start():
   mydate = []
   mytime = []
   myidentifier = []
-  myroom = ['Bobst LL1-20','Bobst LL1-18','Bobst LL1-19','Bobst LL2-22','Bobst LL2-07','Bobst LL2-08','Bobst LL2-09']
+  myroom = ['Bobst LL2-22','Bobst LL2-07','Bobst LL2-08','Bobst LL2-09','Bobst LL1-20','Bobst LL1-18','Bobst LL1-19' ]
   mynext = []
   status = [] 
-  f = open('credential/userinfo.txt','r+')
+  f = open('../credential/userinfo.txt','r+')
   for i in f:
     info_line.append(i)
   for i in info_line:
@@ -282,8 +282,6 @@ def reservation(username, password, month, date, time_hour, ampm_identifier, roo
       print 'Reservation Failed for NetID: ',username,'\n',sys.exc_info()[0]
       browser.quit()
       return 0
-  finally:
-    browser.quit()
 
 if __name__ == "__main__":
   IO_Start()
