@@ -24,7 +24,7 @@ def IO_Start():
   myroom = ['Bobst LL2-22','Bobst LL2-07','Bobst LL2-08','Bobst LL2-09','Bobst LL1-20','Bobst LL1-18','Bobst LL1-19' ]
   mynext = []
   status = [] 
-  f = open('../credential/userinfo.txt','r+')
+  f = open('credential/userinfo.txt','r+')
   for i in f:
     info_line.append(i)
   for i in info_line:
